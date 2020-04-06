@@ -21,7 +21,15 @@ class UKF {
    * @param meas_package The latest measurement data of either radar or laser
    */
   void ProcessMeasurement(MeasurementPackage meas_package);
-
+  
+  /**
+   * Prediction the next state given that current state is col
+   * and time interval is delta_t
+   * @param col vector to predict next state for
+   * @param delta_t Time between k and k+1 in s
+   */
+  Eigen::VectorXd PredictionForVector(Eigen::VectorXd & col, double delta_t);
+  
   /**
    * Prediction Predicts sigma points, the state, and the state covariance
    * matrix
@@ -30,10 +38,22 @@ class UKF {
   void Prediction(double delta_t);
 
   /**
+   * Calculate Lidar measurement for state col
+   * @param col state vector calculate measurement from
+   */
+  Eigen::VectorXd MeasurementLidar(Eigen::VectorXd& col);
+
+  /**
    * Updates the state and the state covariance matrix using a laser measurement
    * @param meas_package The measurement at k+1
    */
   void UpdateLidar(MeasurementPackage meas_package);
+
+  /**
+   * Calculate radar measurement for state col
+   * @param col state vector calculate measurement from
+   */
+  Eigen::VectorXd MeasurementRadar(Eigen::VectorXd& col);
 
   /**
    * Updates the state and the state covariance matrix using a radar measurement
@@ -69,11 +89,17 @@ class UKF {
   // Process noise standard deviation yaw acceleration in rad/s^2
   double std_yawdd_;
 
+  // Process noise matrix assembled
+  Eigen::MatrixXd P_cov_;
+
   // Laser measurement noise standard deviation position1 in m
   double std_laspx_;
 
   // Laser measurement noise standard deviation position2 in m
   double std_laspy_;
+
+  // Laser measurement covariance matrix assembled
+  Eigen::MatrixXd Lidar_M_cov;
 
   // Radar measurement noise standard deviation radius in m
   double std_radr_;
@@ -83,6 +109,9 @@ class UKF {
 
   // Radar measurement noise standard deviation radius change in m/s
   double std_radrd_ ;
+
+  // Radar measurement covariance matrix assembled
+  Eigen::MatrixXd Radar_M_cov;
 
   // Weights of sigma points
   Eigen::VectorXd weights_;

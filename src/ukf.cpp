@@ -117,8 +117,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     P_ = MatrixXd::Identity(n_x_, n_x_);
     // P_.col(2).row(2) = 0.2;
     MatrixXd P_pos = MatrixXd(2, 2);
-    P_pos << 1, 0,
-            0, 1;
+    P_pos << 1, 1,
+            1, 0.2;
     P_.topLeftCorner(2, 2) = P_pos;                    
     time_us_ = meas_package.timestamp_;
     is_initialized_ = true;
